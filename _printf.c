@@ -5,19 +5,16 @@
 
 /**
  * _printf - Custom printf implementation
- * @format: The format string with conversion specifiers
+ * @format: Format string with conversion specifiers
  * @...: Variable arguments based on conversion specifiers
- *
- * Return: The number of printed characters (excluding null byte)
+ * Return: Number of printed characters (excluding null byte)
  */
 int _printf(const char *format, ...)
 {
 va_list args;
 va_start(args, format);
 int count = 0;
-char c;
-const char *s;
-while (*format)
+for (; *format; format++)
 {
 if (*format == '%')
 {
@@ -25,22 +22,17 @@ format++;
 switch (*format)
 {
 case 'c':
-c = (char) va_arg(args, int);
-putchar(c);
-count++;
+count += putchar(va_arg(args, int));
 break;
 case 's':
-s = va_arg(args, const char *);
-while (*s)
 {
-putchar(*s);
-s++;
-count++;
-}
+const char *s = va_arg(args, const char *);
+for (; *s; s++)
+count += putchar(*s);
 break;
+}
 case '%':
-putchar('%');
-count++;
+count += putchar('%');
 break;
 default:
 break;
@@ -48,10 +40,8 @@ break;
 }
 else
 {
-putchar(*format);
-count++;
+count += putchar(*format);
 }
-format++;
 }
 va_end(args);
 return (count);
