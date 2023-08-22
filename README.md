@@ -1,1 +1,1 @@
-alx_printf projcet
+alx_printf project
