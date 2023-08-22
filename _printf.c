@@ -61,9 +61,8 @@ int _printf(const char *format, ...)
 int main(void)
 {
 	_printf("Caro\n");
-	_printf("%c\n");
-	_printf("%s\n");
+	_printf("%c\n", 'I');
+	_printf("%s\n", "String");
 	_printf("%%\n");
 	return (0);
 }
-
