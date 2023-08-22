@@ -1,62 +1,58 @@
+#include <stdio.h>
+#include <stdarg.h>
+#include <limits.h>
 #include "main.h"
-/**
- * _printf -a function to produce output according to the format
- * @format: character string
- * @...: variables
- * Return: the number of character printed
- */
 
+/**
+ * _printf - Custom printf implementation
+ * @format: The format string with conversion specifiers
+ * @...: Variable arguments based on conversion specifiers
+ *
+ * Return: The number of printed characters (excluding null byte)
+ */
 int _printf(const char *format, ...)
 {
-int ch = 0;
-va_list list;
-if (format == NULL)
-return (-1);	va_start(list, format);
+va_list args;
+va_start(args, format);
+int count = 0;
+char c;
+const char *s;
 while (*format)
 {
-if (*format != '%')
+if (*format == '%')
 {
-write(1, format, 1);
-ch++;
+format++;
+switch (*format)
+{
+case 'c':
+c = (char) va_arg(args, int);
+putchar(c);
+count++;
+break;
+case 's':
+s = va_arg(args, const char *);
+while (*s)
+{
+putchar(*s);
+s++;
+count++;
+}
+break;
+case '%':
+putchar('%');
+count++;
+break;
+default:
+break;
+}
 }
 else
 {
-format++;
-if (*format == '\0')
-break;
-if (*format == '%')
-{
-write(1, format, 1);
-ch++;
-}
-else if (*format == 'c')
-{
-char c = va_arg(list, int);
-write(1, &c, 1);
-ch++;
-}
-else if (*format == 's')
-{
-char *str = va_arg(list, char*);
-int str_len = 0;
-while (str[str_len] != '\0')
-{
-str_len++;
-}
-write(1, str, str_len);
-ch += str_len;
-}
+putchar(*format);
+count++;
 }
 format++;
 }
-va_end(list);
-return (ch);
-}
-int main(void)
-{
-_printf("Caro\n");
-_printf("%c\n", 'I');
-_printf("%s\n", "String");
-_printf("%%\n");
-return (0);
+va_end(args);
+return (count);
 }
