@@ -2,7 +2,6 @@
 #include <stdarg.h>
 #include <limits.h>
 #include "main.h"
-
 /**
  * _printf - Custom printf implementation
  * @format: Format string with conversion specifiers
@@ -11,41 +10,61 @@
  */
 int _printf(const char *format, ...)
 {
-int count;
-const char *s;
+int len = 0;
 va_list args;
 va_start(args, format);
-count = 0;
-while (*format)
+while (*format != '\0')
 {
 if (*format == '%')
 {
 format++;
-if (*format == 'c')
+switch (*format)
 {
-int c = va_arg(args, int);
-count += putchar(c);
+case 'c':
+len += putchar(va_arg(args, int));
+break;
+case 's':
+{
+char *str = va_arg(args, char *);
+while (*str != '\0')
+{
+len += putchar(*str);
+str++;
 }
-else if (*format == 's')
-{
-s = va_arg(args, const char *);
-while (*s)
-{
-count += putchar(*s);
-s++;
+break;
 }
-}
-else if (*format == '%')
-{
-count += putchar('%');
+case 'd':
+case 'i':
+len += printf("%d", va_arg(args, int));
+break;
+case 'u':
+len += printf("%u", va_arg(args, unsigned int));
+break;
+case 'o':
+len += printf("%o", va_arg(args, unsigned int));
+break;
+case 'x':
+case 'X':
+len += printf("%x", va_arg(args, unsigned int));
+break;
+case 'p':
+len += printf("%p", va_arg(args, void *));
+break;
+case '%':
+len += putchar('%');
+break;
+default:
+len += putchar('%');
+len += putchar(*format);
+break;
 }
 }
 else
 {
-count += putchar(*format);
+len += putchar(*format);
 }
 format++;
 }
 va_end(args);
-return (count);
+return (len);
 }
